@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '@/views/Login.vue'
 import Home from '@/views/Home.vue'
+import User from '@/views/User.vue'
 Vue.use(VueRouter)
 export default new VueRouter({
   routes: [{
@@ -16,7 +17,12 @@ export default new VueRouter({
   {
     name: 'Home',
     path: '/home',
-    component: Home
+    component: Home,
+    children: [{
+      name: 'User',
+      path: 'user',
+      component: User
+    }]
   }
   ]
 })
