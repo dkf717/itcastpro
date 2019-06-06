@@ -2,7 +2,7 @@
   <div class="home">
     <el-container>
       <el-aside :width="collapse?'64px':'200px'">
-        <img src="../assets/logo.png" alt="" class="logo" >
+        <img class="logo">
         <el-menu
           :collapse="collapse"
           :router="true"
@@ -53,7 +53,7 @@
           <span class="myicon myicon-menu toggle-btn" @click="collapse=!collapse"></span>
           <span class="system-title">电商后台管理系统</span>
           <div class="welcome">
-            <span>你好：admin </span>
+            <span>你好：admin</span>
             <a href="javascript:;">退出</a>
           </div>
         </el-header>
@@ -102,8 +102,9 @@ export default {
     background-color: #545c64;
   }
   .logo {
+    width: 100%;
     height: 60px;
-    background: url(../assets/logo.png);
+    background: url("../assets/logo.png");
     background-size: cover;
     background-color: #fff;
   }
