@@ -10,39 +10,20 @@
           :collapse-transition="false"
           default-active="2"
           class="el-menu-vertical-demo"
-          @open="handleOpen"
-          @close="handleClose"
+
           background-color="#545c64"
           text-color="#fff"
           active-text-color="#ffd04b"
         >
-          <el-submenu index="1">
+          <el-submenu v-for="first in leftrightlist" :key="first.id" :index="first.path">
             <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>用户管理</span>
+              <i class="el-icon-s-custom"></i>
+              <span>{{first.authName}}</span>
             </template>
-            <el-menu-item index="/home/user">
+            <el-menu-item v-for="second in first.children" :key="second.id" :index="'/home/'+second.path">
               <template slot="title">
                 <i class="el-icon-menu"></i>
-                <span>用户列表</span>
-              </template>
-            </el-menu-item>
-          </el-submenu>
-          <el-submenu index="2">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>权限管理</span>
-            </template>
-            <el-menu-item index="2-1">
-              <template slot="title">
-                <i class="el-icon-menu"></i>
-                <span>角色列表</span>
-              </template>
-            </el-menu-item>
-            <el-menu-item index="2-2">
-              <template slot="title">
-                <i class="el-icon-menu"></i>
-                <span>权限列表</span>
+                <span>{{second.authName}}</span>
               </template>
             </el-menu-item>
           </el-submenu>
@@ -65,19 +46,22 @@
   </div>
 </template>
 <script>
+import { getaxios } from '@/api/axios.js'
 export default {
   data () {
     return {
-      collapse: false
+      collapse: false,
+      leftrightlist: []
     }
   },
   methods: {
-    handleOpen (key, keyPath) {
-      console.log(key, keyPath)
-    },
-    handleClose (key, keyPath) {
-      console.log(key, keyPath)
-    }
+
+  },
+  mounted () {
+    getaxios('menus').then(result => {
+      this.leftrightlist = result.data.data
+      console.log(this.leftrightlist)
+    })
   }
 }
 </script>

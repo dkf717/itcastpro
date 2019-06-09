@@ -6,12 +6,18 @@
       <el-breadcrumb-item>用户列表</el-breadcrumb-item>
     </el-breadcrumb>
     <div style="margin-top:15px;">
-      <el-input placeholder="请输入内容" v-model="paging.query" style="width:300px;margin-right:10px;" @keyup.enter.native="getuserlist" clearable>
+      <el-input
+        placeholder="请输入内容"
+        v-model="paging.query"
+        style="width:300px;margin-right:10px;"
+        @keyup.enter.native="getuserlist"
+        clearable
+      >
         <el-button slot="append" icon="el-icon-search" @click="getuserlist"></el-button>
       </el-input>
       <el-button type="success" plain @click="adduserbox=true">添加用户</el-button>
     </div>
-     <el-pagination
+    <el-pagination
       background
       :page-sizes="[2, 3, 4, 5]"
       :page-size="paging.pagesize"
@@ -28,14 +34,25 @@
       <el-table-column prop="mobile" label="电话"></el-table-column>
       <el-table-column label="状态">
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949" @change="editstate(scope.row.id,$event)"></el-switch>
+          <el-switch
+            v-model="scope.row.mg_state"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            @change="editstate(scope.row.id,$event)"
+          ></el-switch>
         </template>
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button type="primary" icon="el-icon-edit" @click="edituserinfo(scope.row)"></el-button>
-          <el-button type="primary" icon="el-icon-delete" @click="deluser(scope.row)"></el-button>
-          <el-button type="primary" icon="el-icon-s-operation" @click="editroleinfo(scope.row)"></el-button>
+          <el-tooltip class="item" effect="dark" content="编辑" placement="top">
+            <el-button type="primary" icon="el-icon-edit" @click="edituserinfo(scope.row)"></el-button>
+          </el-tooltip>
+          <el-tooltip class="item" effect="dark" content="删除" placement="top">
+            <el-button type="primary" icon="el-icon-delete" @click="deluser(scope.row)"></el-button>
+          </el-tooltip>
+          <el-tooltip class="item" effect="dark" content="分配角色" placement="top">
+            <el-button type="primary" icon="el-icon-s-operation" @click="editroleinfo(scope.row)"></el-button>
+          </el-tooltip>
         </template>
       </el-table-column>
     </el-table>
@@ -57,10 +74,11 @@
         <el-button type="primary" @click="edituserbyid">确 定</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="分配角色" :visible.sync="editrolebox">
+    <el-dialog :title="`请为${editrole.username}分配角色`" :visible.sync="editrolebox">
       <el-select v-model="editrole.roleid" placeholder="请选择">
         <el-option v-for="item in rolelist" :key="item.id" :label="item.roleName" :value="item.id"></el-option>
       </el-select>
+
       <div slot="footer" class="dialog-footer">
         <el-button @click="editrolebox = false">取 消</el-button>
         <el-button type="primary" @click="editrolebyid">确 定</el-button>
@@ -108,7 +126,8 @@ export default {
       edituser: {},
       editrole: {
         userid: '',
-        roleid: ''
+        roleid: '',
+        username: ''
       },
       adduser: {
         username: '',
@@ -178,6 +197,7 @@ export default {
             type: 'success',
             message: result.data.meta.msg
           })
+          this.editrolebox = false
         } else {
           this.$message.error(result.data.meta.msg)
         }
@@ -187,6 +207,7 @@ export default {
     editroleinfo (obj) {
       this.editrole.userid = obj.id
       this.editrole.roleid = obj.rid
+      this.editrole.username = obj.username
       this.editrolebox = true
     },
     deluser (obj) {
@@ -237,7 +258,10 @@ export default {
       getaxios('users', {
         params: this.paging
       }).then(result => {
-        if ((result.data.data.pagenum - 1) * this.paging.pagesize >= result.data.data.total) {
+        if (
+          (result.data.data.pagenum - 1) * this.paging.pagesize >=
+          result.data.data.total && result.data.data.pagenum !== 1
+        ) {
           this.paging.pagenum--
           this.getuserlist()
         } else {
